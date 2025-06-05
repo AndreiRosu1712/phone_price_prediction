@@ -38,27 +38,32 @@ PCA (Principal Component Analysis) is applied to reduce dimensionality while ret
 - `X_train_reduced`
 - `X_test_reduced`
 
-## Models Trained
+## Models Trained and Results
 
 ### Logistic Regression
 
-- Trained on the original dataset
-- Trained on the PCA-reduced dataset
-- Accuracy and confusion matrices are computed and visualized for both cases
+- Accuracy on original data: **61.8%**
+- Accuracy on PCA-reduced data: **80.2%**
+
+**Observation:** Logistic Regression greatly benefits from dimensionality reduction, with a significant accuracy gain of over 18%. This suggests multicollinearity or irrelevant features might be affecting performance on raw data.
 
 ### Random Forest
 
-- Trained on the original dataset
-- Trained on the PCA-reduced dataset
-- Evaluates multiple `n_estimators` values (10, 50, 100, 200, 300) using `cross_val_score`
-- Accuracy and confusion matrices are computed and visualized
+- Accuracy on original data: **85.2%**
+- Accuracy on PCA-reduced data: **91.0%**
 
-### K-Nearest Neighbors (KNN)
+**Cross-validation accuracy (mean):**
+- Original data: up to **87.4%** (best with 200 estimators)
+- PCA-reduced data: up to **92.3%** (best with 300 estimators)
 
-- `n_neighbors=5`
-- Trained on the original dataset
-- Trained on the PCA-reduced dataset
-- Accuracy and confusion matrices are computed and visualized
+**Observation:** Random Forest performs strongly even on raw features. However, PCA still provides a marginal gain (~6%), showing that dimensionality reduction can enhance ensemble methods further when many features are present.
+
+### K-Nearest Neighbors (KNN, k=5)
+
+- Accuracy on original data: **91.0% – 92.2%**
+- Accuracy on PCA-reduced data: **90.8% – 91.6%**
+
+**Observation:** KNN achieves the best accuracy on the original data without PCA. Applying PCA results in slightly lower performance, likely due to loss of neighborhood structure in transformed space.
 
 ## Evaluation
 
@@ -68,16 +73,25 @@ For each model:
 
 ## Observations and Potential Issues
 
-- `confusion_matrix` is not explicitly imported (should be added: `from sklearn.metrics import confusion_matrix`)
-- Variables `knnoriginal` and `knnreduced` used in `ConfusionMatrixDisplay` are not defined correctly; likely intended to be `knn_original` and `knn_reduced`
+- `confusion_matrix` is not explicitly imported (`from sklearn.metrics import confusion_matrix` is missing).
+- `knnoriginal` and `knnreduced` are undefined; they should be `knn_original` and `knn_reduced` respectively when plotting confusion matrices.
+- PCA reduced the dimensionality effectively, but its impact varies per model: it improved Logistic Regression substantially, slightly helped Random Forest, and slightly hindered KNN.
 
 ## Recommendations
 
-- Use a preprocessing pipeline to handle feature scaling
-- Normalize features before applying KNN
-- Save model results and plots to an output directory
-- Fix typographical errors and missing imports for full execution
+- Use a preprocessing pipeline to handle feature scaling (especially important for KNN).
+- Normalize or standardize features before applying distance-based models.
+- Include `GridSearchCV` for hyperparameter optimization.
+- Automatically log evaluation metrics and visualizations.
+- Consider additional models (SVM, Gradient Boosting) for comparison.
 
 ## Conclusion
 
-This script compares the performance of three classification models (Logistic Regression, Random Forest, KNN) on both the original and PCA-reduced datasets, analyzing the impact of dimensionality reduction on model accuracy.
+Random Forest and KNN classifiers provide strong accuracy on this classification task. Logistic Regression, though less performant on raw features, shows substantial improvement with PCA, indicating that dimensionality reduction is beneficial for linear models. KNN performs best without PCA, reflecting its sensitivity to distance-preserving transformations.
+
+**Final Takeaways:**
+- **Best raw accuracy:** KNN on original data (**92.2%**)
+- **Best PCA-reduced accuracy:** Random Forest with 300 estimators (**92.3%**)
+- **Best improvement via PCA:** Logistic Regression (**+18.4%** gain)
+
+This project highlights the importance of evaluating models both on raw and transformed features and tailoring preprocessing steps to each model's characteristics.
