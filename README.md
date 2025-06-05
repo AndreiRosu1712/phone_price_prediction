@@ -1,83 +1,83 @@
-# Clasificarea Gamelor de Prețuri pe Bază de Caracteristici
+# Price Range Classification Based on Features
 
-Acest proiect folosește tehnici de învățare automată pentru a clasifica gama de preț (`price_range`) a unui produs pe baza unui set de caracteristici numerice și categorice. Sunt aplicate mai multe modele de clasificare și se compară performanțele acestora atât pe datele originale, cât și pe date reduse cu PCA.
+This project uses machine learning techniques to classify a product's price range (`price_range`) based on a set of numerical and categorical features. Several classification models are applied and their performance is compared both on the original dataset and on a reduced version using PCA.
 
-## Date de intrare
+## Input Data
 
-Fișierul principal de date este:
-- `trainPrice.csv`: setul de antrenament care conține caracteristici și eticheta țintă `price_range`.
+The main input dataset is:
+- `trainPrice.csv`: the training dataset containing features and the target label `price_range`.
 
-## Biblioteci necesare
+## Required Libraries
 
-- pandas
-- numpy
-- seaborn
-- matplotlib
-- sklearn (model_selection, metrics, decomposition, linear_model, ensemble, neighbors)
+- pandas  
+- numpy  
+- seaborn  
+- matplotlib  
+- scikit-learn (model_selection, metrics, decomposition, linear_model, ensemble, neighbors)
 
-## Explorarea datelor
+## Data Exploration
 
-- Încărcarea setului de date și afișarea informațiilor generale (`shape`, `head`, `info`, `describe`, `isnull().sum()`).
-- Separarea caracteristicilor în:
-  - Caracteristici categorice: cu mai puțin de 30 valori unice.
-  - Caracteristici numerice: cu 30 sau mai multe valori unice.
-- Vizualizarea distribuției variabilelor:
-  - Ploturi de tip countplot pentru variabilele categorice.
-  - Histogramă și KDE pentru variabilele numerice, împreună cu media marcată.
+- Load the dataset and display general information (`shape`, `head`, `info`, `describe`, `isnull().sum()`).
+- Separate features into:
+  - Categorical features: with fewer than 30 unique values.
+  - Numerical features: with 30 or more unique values.
+- Visualize feature distributions:
+  - Countplots for categorical variables.
+  - Histograms and KDE plots for numerical variables, with the mean value highlighted.
 
-## Preprocesare
+## Preprocessing
 
-- Variabilă țintă: `price_range`
-- Caracteristici: toate celelalte coloane
-- Împărțirea setului de date în:
+- Target variable: `price_range`
+- Features: all other columns
+- Split the dataset into:
   - `X_train`, `X_test`, `y_train`, `y_test` (75% / 25%)
 
-## Reducerea dimensionalității
+## Dimensionality Reduction
 
-Se aplică PCA (Principal Component Analysis) pentru reducerea dimensionalității la un prag de 95% varianță explicată:
+PCA (Principal Component Analysis) is applied to reduce dimensionality while retaining 95% of the explained variance:
 - `X_train_reduced`
 - `X_test_reduced`
 
-## Modele antrenate
+## Models Trained
 
 ### Logistic Regression
 
-- Aplicat pe datele originale
-- Aplicat pe datele reduse cu PCA
-- Se calculează acuratețea și se afișează matricea de confuzie
+- Trained on the original dataset
+- Trained on the PCA-reduced dataset
+- Accuracy and confusion matrices are computed and visualized for both cases
 
 ### Random Forest
 
-- Aplicat pe datele originale
-- Aplicat pe datele reduse cu PCA
-- Se evaluează mai multe valori pentru `n_estimators` (10, 50, 100, 200, 300) folosind `cross_val_score`
-- Se calculează acuratețea și se afișează matricea de confuzie
+- Trained on the original dataset
+- Trained on the PCA-reduced dataset
+- Evaluates multiple `n_estimators` values (10, 50, 100, 200, 300) using `cross_val_score`
+- Accuracy and confusion matrices are computed and visualized
 
 ### K-Nearest Neighbors (KNN)
 
 - `n_neighbors=5`
-- Aplicat pe datele originale
-- Aplicat pe datele reduse cu PCA
-- Se calculează acuratețea și se afișează matricea de confuzie
+- Trained on the original dataset
+- Trained on the PCA-reduced dataset
+- Accuracy and confusion matrices are computed and visualized
 
-## Evaluare
+## Evaluation
 
-Pentru fiecare model sunt calculate:
-- Acuratețea (`accuracy_score`)
-- Matricea de confuzie (`ConfusionMatrixDisplay`)
+For each model:
+- Accuracy is calculated using `accuracy_score`
+- Confusion matrix is displayed using `ConfusionMatrixDisplay`
 
-## Observații și posibile erori
+## Observations and Potential Issues
 
-- Funcția `confusion_matrix` nu este importată direct (ar trebui: `from sklearn.metrics import confusion_matrix`).
-- Variabilele `knnoriginal` și `knnreduced` nu sunt definite corect în afișarea matricei de confuzie (`display_labels`); probabil ar trebui înlocuite cu `knn_original` și `knn_reduced`.
+- `confusion_matrix` is not explicitly imported (should be added: `from sklearn.metrics import confusion_matrix`)
+- Variables `knnoriginal` and `knnreduced` used in `ConfusionMatrixDisplay` are not defined correctly; likely intended to be `knn_original` and `knn_reduced`
 
-## Recomandări
+## Recommendations
 
-- Adăugarea unui pipeline de preprocesare pentru scalarea caracteristicilor.
-- Normalizarea datelor înainte de antrenarea KNN.
-- Salvarea rezultatelor și graficelor într-un folder de ieșire.
-- Corectarea typo-urilor și importurilor lipsă pentru o execuție completă.
+- Use a preprocessing pipeline to handle feature scaling
+- Normalize features before applying KNN
+- Save model results and plots to an output directory
+- Fix typographical errors and missing imports for full execution
 
-## Concluzie
+## Conclusion
 
-Scriptul compară performanțele a trei modele de clasificare (Logistic Regression, Random Forest, KNN) pe seturi de date originale și reduse, analizând impactul reducerii dimensionalității asupra preciziei modelelor.
+This script compares the performance of three classification models (Logistic Regression, Random Forest, KNN) on both the original and PCA-reduced datasets, analyzing the impact of dimensionality reduction on model accuracy.
